@@ -14,9 +14,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.app.whatsapp.whatsappclone.R;
 import com.app.whatsapp.whatsappclone.helper.Permissao;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,6 +38,8 @@ public class ConfiguracoesActivity extends AppCompatActivity {
     private static final int SELECAO_CAMERA = 100;
     private static final int SELECAO_GALERIA = 200;
     private CircleImageView circleImageViewPerfil;
+    private StorageReference storageReference;
+    private String identificadorUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +104,35 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
                if (imagem != null){
                     circleImageViewPerfil.setImageBitmap(imagem);
+
+                   //Recuperar dados da imagem para o firebase
+                   ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                   imagem.compress(Bitmap.CompressFormat.JPEG, 70, baos );
+                   byte[] dadosImagem = baos.toByteArray();
+
+                   //Salvar imagem no firebase
+                   StorageReference imagemRef = storageReference
+                           .child("imagens")
+                           .child("perfil")
+                           //.child( identificadorUsuario )
+                           .child(identificadorUsuario + ".jpeg");
+
+                   UploadTask uploadTask = imagemRef.putBytes( dadosImagem );
+                   uploadTask.addOnFailureListener(new OnFailureListener() {
+                       @Override
+                       public void onFailure(@NonNull Exception e) {
+                           Toast.makeText(ConfiguracoesActivity.this,
+                                   "Erro ao fazer upload da imagem",
+                                   Toast.LENGTH_SHORT).show();
+                       }
+                   }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                       @Override
+                       public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                           Toast.makeText(ConfiguracoesActivity.this,
+                                   "Sucesso ao fazer upload da imagem",
+                                   Toast.LENGTH_SHORT).show();
+                       }
+                   });
                }
             }catch (Exception e){
                 e.printStackTrace();
