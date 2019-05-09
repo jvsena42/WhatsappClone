@@ -17,7 +17,9 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.app.whatsapp.whatsappclone.R;
+import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
 import com.app.whatsapp.whatsappclone.helper.Permissao;
+import com.app.whatsapp.whatsappclone.helper.UsuarioFirebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
@@ -45,6 +47,10 @@ public class ConfiguracoesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuracoes);
+
+        //Configurações iniciais
+        storageReference = ConfiguracaoFirebase.getFirebaseStorage();
+        identificadorUsuario = UsuarioFirebase.getIdentificadorUsuario();
 
         //Validar permissoes
         Permissao.validarPermissoes(permissoesNecessarias,this,1);
@@ -114,7 +120,6 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                    StorageReference imagemRef = storageReference
                            .child("imagens")
                            .child("perfil")
-                           //.child( identificadorUsuario )
                            .child(identificadorUsuario + ".jpeg");
 
                    UploadTask uploadTask = imagemRef.putBytes( dadosImagem );
