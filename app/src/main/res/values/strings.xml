@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Whatsapp Clone</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="digite_email">Digite seu e-mail</string>
+    <string name="digite_senha">Digite sua senha</string>
+    <string name="botao_logar">Logar</string>
+    <string name="nao_tem_conta">Não tem conta? Cadastre-se</string>
+    <string name="nome">Nome</string>
+    <string name="app_email">Email</string>
+    <string name="app_nome">Digite seu nome</string>
 </resources>
