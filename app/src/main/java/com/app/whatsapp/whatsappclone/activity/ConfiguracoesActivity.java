@@ -15,12 +15,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.app.whatsapp.whatsappclone.R;
 import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
 import com.app.whatsapp.whatsappclone.helper.Permissao;
 import com.app.whatsapp.whatsappclone.helper.UsuarioFirebase;
+import com.app.whatsapp.whatsappclone.model.Usuario;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,8 +46,10 @@ public class ConfiguracoesActivity extends AppCompatActivity {
     private static final int SELECAO_GALERIA = 200;
     private CircleImageView circleImageViewPerfil;
     private EditText editPerfilNome;
+    private ImageView imageAtualizarNome;
     private StorageReference storageReference;
     private String identificadorUsuario;
+    private Usuario usuarioLogado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class ConfiguracoesActivity extends AppCompatActivity {
         //Configurações iniciais
         storageReference = ConfiguracaoFirebase.getFirebaseStorage();
         identificadorUsuario = UsuarioFirebase.getIdentificadorUsuario();
+        usuarioLogado = UsuarioFirebase.getDadosUsuarioLogado();
 
         //Validar permissoes
         Permissao.validarPermissoes(permissoesNecessarias,this,1);
@@ -63,6 +68,7 @@ public class ConfiguracoesActivity extends AppCompatActivity {
         imageButtonGaleria = findViewById(R.id.imageButtongaleria);
         circleImageViewPerfil = findViewById(R.id.circleImageViewFotoPerfil);
         editPerfilNome = findViewById(R.id.editPerfilNome);
+        imageAtualizarNome = findViewById(R.id.imageAtualizarNome);
 
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
         toolbar.setTitle("Configuracoes");
@@ -106,6 +112,23 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                 if (intent.resolveActivity( getPackageManager()) != null){
                     startActivityForResult(intent,SELECAO_GALERIA);
                 }
+            }
+        });
+
+        imageAtualizarNome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            String nome = editPerfilNome.getText().toString();
+            boolean retorno = UsuarioFirebase.atualizarNomeUsuario(nome);
+            if (retorno){
+
+                //Atualizar nome no FirebaseDatabase
+                usuarioLogado.setNome(nome);
+                usuarioLogado.atualizar();
+                Toast.makeText(ConfiguracoesActivity.this,"Nome alterado com sucesso",Toast.LENGTH_SHORT).show();
+            }
+
             }
         });
     }
@@ -177,7 +200,14 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
     public void atualizaFotoUsuario(Uri url){
         //Atualizar url da foto no firebaseUser
-        UsuarioFirebase.atualizarFotoUsuario(url);
+        boolean retorno = UsuarioFirebase.atualizarFotoUsuario(url);
+
+       if (retorno){
+           //Atualizar url da foto no firebasa database
+           usuarioLogado.setFoto(url.toString());
+           usuarioLogado.atualizar();
+       }
+
     }
 
     @Override
