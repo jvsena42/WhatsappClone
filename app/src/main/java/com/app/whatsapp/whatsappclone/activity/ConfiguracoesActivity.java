@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -20,8 +21,10 @@ import com.app.whatsapp.whatsappclone.R;
 import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
 import com.app.whatsapp.whatsappclone.helper.Permissao;
 import com.app.whatsapp.whatsappclone.helper.UsuarioFirebase;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -40,6 +43,7 @@ public class ConfiguracoesActivity extends AppCompatActivity {
     private static final int SELECAO_CAMERA = 100;
     private static final int SELECAO_GALERIA = 200;
     private CircleImageView circleImageViewPerfil;
+    private EditText editPerfilNome;
     private StorageReference storageReference;
     private String identificadorUsuario;
 
@@ -58,12 +62,28 @@ public class ConfiguracoesActivity extends AppCompatActivity {
         imageButtonCamera = findViewById(R.id.imageButtonCamera);
         imageButtonGaleria = findViewById(R.id.imageButtongaleria);
         circleImageViewPerfil = findViewById(R.id.circleImageViewFotoPerfil);
+        editPerfilNome = findViewById(R.id.editPerfilNome);
 
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
         toolbar.setTitle("Configuracoes");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //Recuperar dados do usuario
+        FirebaseUser usuario = UsuarioFirebase.getUsuarioAtual();
+        Uri url = usuario.getPhotoUrl();
+
+        if (url !=null){
+            Glide.with(ConfiguracoesActivity.this)
+                    .load(url)
+                    .into(circleImageViewPerfil);
+        }else{
+            circleImageViewPerfil.setImageResource(R.drawable.padrao);
+        }
+
+        editPerfilNome.setText(usuario.getDisplayName());
+
 
         imageButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +156,15 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                            Toast.makeText(ConfiguracoesActivity.this,
                                    "Sucesso ao fazer upload da imagem",
                                    Toast.LENGTH_SHORT).show();
+
+                           taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener
+                                   (new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri url) {
+                                            atualizaFotoUsuario(url);
+                                        }
+                                    }
+                                   );
                        }
                    });
                }
@@ -144,6 +173,11 @@ public class ConfiguracoesActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    public void atualizaFotoUsuario(Uri url){
+        //Atualizar url da foto no firebaseUser
+        UsuarioFirebase.atualizarFotoUsuario(url);
     }
 
     @Override
