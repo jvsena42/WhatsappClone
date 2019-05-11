@@ -1,16 +1,21 @@
 package com.app.whatsapp.whatsappclone.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.app.whatsapp.whatsappclone.R;
 import com.app.whatsapp.whatsappclone.model.Usuario;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyViewHolder> {
 
@@ -32,6 +37,17 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
+        Usuario usuario = contatos.get(i);
+
+        myViewHolder.nome.setText(usuario.getNome());
+        myViewHolder.email.setText(usuario.getEmail());
+
+        if (usuario.getFoto() != null){
+            Uri uri = Uri.parse(usuario.getFoto());
+            Glide.with(context).load(uri).into(myViewHolder.foto);
+        }else {
+            myViewHolder.foto.setImageResource(R.drawable.padrao);
+        }
 
     }
 
@@ -42,8 +58,15 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
+        CircleImageView foto;
+        TextView nome,email;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            foto = itemView.findViewById(R.id.imageViewFotoContato);
+            nome = itemView.findViewById(R.id.textNomeContato);
+            email = itemView.findViewById(R.id.textEmailContato);
         }
     }
 }
