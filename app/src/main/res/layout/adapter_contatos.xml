@@ -40,7 +40,8 @@
                 android:id="@+id/textEmailContato"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/app_email" />
+                android:text="@string/app_email"
+                android:textColor="@android:color/darker_gray" />
         </LinearLayout>
 
     </LinearLayout>

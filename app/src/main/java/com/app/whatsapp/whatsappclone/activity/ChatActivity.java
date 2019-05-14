@@ -8,11 +8,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.app.whatsapp.whatsappclone.R;
+import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
+import com.app.whatsapp.whatsappclone.helper.Base64Custom;
+import com.app.whatsapp.whatsappclone.helper.UsuarioFirebase;
+import com.app.whatsapp.whatsappclone.model.Mensagem;
 import com.app.whatsapp.whatsappclone.model.Usuario;
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DatabaseReference;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -21,6 +27,11 @@ public class ChatActivity extends AppCompatActivity {
     private TextView textViewNome;
     private CircleImageView circleImageViewFoto;
     private Usuario usuarioDestinatario;
+    private EditText editMensagem;
+
+    //Identificador usuario remetente e destinatario
+    private String idUsuarioRemetente;
+    private String idUsuarioDestinatario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +47,10 @@ public class ChatActivity extends AppCompatActivity {
         //Configuracoes iniciais
         textViewNome = findViewById(R.id.textViewNomeChat);
         circleImageViewFoto = findViewById(R.id.circleImageFotoChat);
+        editMensagem = findViewById(R.id.editMensagem);
+
+        //Recuperar dados do usuario remetente
+        idUsuarioRemetente = UsuarioFirebase.getIdentificadorUsuario();
 
         //Recuperar dados do usuario destinatario
         Bundle bundle = getIntent().getExtras();
@@ -53,7 +68,40 @@ public class ChatActivity extends AppCompatActivity {
             }else {
                 circleImageViewFoto.setImageResource(R.drawable.padrao);
             }
+
+            //recuperar id do usuario destinatario
+            //idUsuarioDestinatario = usuarioDestinatario.getId();
+            idUsuarioDestinatario = Base64Custom.codificarBase64(usuarioDestinatario.getEmail());
         }
+    }
+
+    public void enviarMensagem(View view){
+        String textoMensagem = editMensagem.getText().toString();
+
+        if (!textoMensagem.isEmpty()){
+
+            Mensagem mensagem = new Mensagem();
+            mensagem.setIdUsuario(idUsuarioRemetente);
+            mensagem.setMensagem(textoMensagem);
+
+            salvarMensagem(idUsuarioRemetente,idUsuarioDestinatario,mensagem);
+
+        }else {
+
+        }
+    }
+
+    private void salvarMensagem(String idRemetente,String idDestinatario, Mensagem msg){
+        DatabaseReference database = ConfiguracaoFirebase.getFirebaseDatabase();
+        DatabaseReference mensagemRef = database.child("mensagens");
+
+        mensagemRef.child(idRemetente)
+                .child(idDestinatario)
+                .push()
+                .setValue(msg);
+
+        //Limpar texto
+        editMensagem.setText("");
     }
 
 }
