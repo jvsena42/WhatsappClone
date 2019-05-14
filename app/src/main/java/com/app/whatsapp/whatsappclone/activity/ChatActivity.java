@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.TextureView;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.app.whatsapp.whatsappclone.R;
+import com.app.whatsapp.whatsappclone.adapter.MensagensAdapter;
 import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
 import com.app.whatsapp.whatsappclone.helper.Base64Custom;
 import com.app.whatsapp.whatsappclone.helper.UsuarioFirebase;
@@ -19,6 +22,9 @@ import com.app.whatsapp.whatsappclone.model.Mensagem;
 import com.app.whatsapp.whatsappclone.model.Usuario;
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -29,9 +35,16 @@ public class ChatActivity extends AppCompatActivity {
     private Usuario usuarioDestinatario;
     private EditText editMensagem;
 
+    private RecyclerView recyclerMensagens;
+    private MensagensAdapter adapter;
+    private List<Mensagem> mensagens = new ArrayList<>();
+
+
     //Identificador usuario remetente e destinatario
     private String idUsuarioRemetente;
     private String idUsuarioDestinatario;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +61,7 @@ public class ChatActivity extends AppCompatActivity {
         textViewNome = findViewById(R.id.textViewNomeChat);
         circleImageViewFoto = findViewById(R.id.circleImageFotoChat);
         editMensagem = findViewById(R.id.editMensagem);
+        recyclerMensagens = findViewById(R.id.recyclerMensagens);
 
         //Recuperar dados do usuario remetente
         idUsuarioRemetente = UsuarioFirebase.getIdentificadorUsuario();
@@ -73,6 +87,15 @@ public class ChatActivity extends AppCompatActivity {
             //idUsuarioDestinatario = usuarioDestinatario.getId();
             idUsuarioDestinatario = Base64Custom.codificarBase64(usuarioDestinatario.getEmail());
         }
+
+        //Configurar adapter
+        adapter = new MensagensAdapter(mensagens,getApplicationContext());
+
+        //Configurar recyclerView
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerMensagens.setLayoutManager(layoutManager);
+        recyclerMensagens.setHasFixedSize(true);
+        recyclerMensagens.setAdapter(adapter);
     }
 
     public void enviarMensagem(View view){
