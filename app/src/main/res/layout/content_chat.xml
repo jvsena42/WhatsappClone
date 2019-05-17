@@ -47,10 +47,11 @@
                 android:layout_weight="1"
                 android:background="@android:color/white"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="@android:color/black" />
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/imageCamera"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 app:srcCompat="@drawable/ic_photo_camera_gray_24dp" />
