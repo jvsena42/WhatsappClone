@@ -26,6 +26,7 @@ import com.app.whatsapp.whatsappclone.adapter.MensagensAdapter;
 import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
 import com.app.whatsapp.whatsappclone.helper.Base64Custom;
 import com.app.whatsapp.whatsappclone.helper.UsuarioFirebase;
+import com.app.whatsapp.whatsappclone.model.Conversa;
 import com.app.whatsapp.whatsappclone.model.Mensagem;
 import com.app.whatsapp.whatsappclone.model.Usuario;
 import com.bumptech.glide.Glide;
@@ -244,9 +245,24 @@ public class ChatActivity extends AppCompatActivity {
             //Salvar mensagem para o destinatário
             salvarMensagem(idUsuarioDestinatario,idUsuarioRemetente,mensagem);
 
-        }else {
+            //Salvar conversa
+            salvarConversa(mensagem);
 
+        }else {
+            Toast.makeText(ChatActivity.this,"Digite uma mensagem",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void salvarConversa (Mensagem msg){
+
+        Conversa conversaRemetente = new Conversa();
+        conversaRemetente.setIdRemetente(idUsuarioRemetente);
+        conversaRemetente.setIdDDestinatario(idUsuarioDestinatario);
+        conversaRemetente.setUltimaMensagem(msg.getMensagem());
+        conversaRemetente.setUsuarioExibicao(usuarioDestinatario);
+
+        conversaRemetente.salvar();
+
     }
 
     private void salvarMensagem(String idRemetente,String idDestinatario, Mensagem msg){
@@ -308,5 +324,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
     }
+
 
 }
