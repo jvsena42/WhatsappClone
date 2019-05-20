@@ -72,7 +72,6 @@ public class ConversasFragment extends Fragment {
 
                         Conversa conversaSelecionada = listaConversas.get(position);
 
-
                         Intent i = new Intent(getActivity(), ChatActivity.class);
                         i.putExtra("chatContato",conversaSelecionada.getUsuarioExibicao());
                         startActivity(i);
@@ -110,6 +109,10 @@ public class ConversasFragment extends Fragment {
         super.onStop();
         conversasRef.removeEventListener(childEventListenerConversas);
         listaConversas.clear();
+    }
+
+    public void pesquisarConversas(String texto){
+
     }
 
     public void recuperarConversas(){
