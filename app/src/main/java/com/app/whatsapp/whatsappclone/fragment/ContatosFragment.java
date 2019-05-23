@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 
 import com.app.whatsapp.whatsappclone.R;
 import com.app.whatsapp.whatsappclone.activity.ChatActivity;
+import com.app.whatsapp.whatsappclone.activity.GrupoActivity;
 import com.app.whatsapp.whatsappclone.adapter.ContatosAdapter;
 import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
 import com.app.whatsapp.whatsappclone.helper.RecyclerItemClickListener;
@@ -76,9 +77,17 @@ public class ContatosFragment extends Fragment {
                             public void onItemClick(View view, int position) {
 
                                 Usuario usuarioSelecionado = listaContatos.get(position);
-                                Intent i = new Intent(getActivity(), ChatActivity.class);
-                                i.putExtra("chatContato",usuarioSelecionado);
-                                startActivity(i);
+                                boolean cabecalho = usuarioSelecionado.getEmail().isEmpty();
+
+                                if (cabecalho){
+                                    Intent i= new Intent(getActivity(), GrupoActivity.class);
+                                    startActivity(i);
+                                }else {
+                                    Intent i = new Intent(getActivity(), ChatActivity.class);
+                                    i.putExtra("chatContato",usuarioSelecionado);
+                                    startActivity(i);
+                                }
+
                             }
 
                             @Override
@@ -92,6 +101,14 @@ public class ContatosFragment extends Fragment {
                             }
                         }
                 ));
+
+        /* Define um usuario com email vazio
+         em caso de email vazio o usuario sera utilizado como cabeçalho, exibindo um novo grupo  */
+        Usuario itemGrupo = new Usuario();
+        itemGrupo.setNome("Novo Grupo");
+        itemGrupo.setEmail("");
+
+        listaContatos.add(itemGrupo);
 
         return  view;
     }
