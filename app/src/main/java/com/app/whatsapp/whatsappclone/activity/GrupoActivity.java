@@ -1,5 +1,6 @@
 package com.app.whatsapp.whatsappclone.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class GrupoActivity extends AppCompatActivity {
     private DatabaseReference usuariosRef;
     private FirebaseUser usuarioAtual;
     private Toolbar toolbar;
+    private FloatingActionButton fabAvancarCadastro;
 
 
     @Override
@@ -47,14 +50,17 @@ public class GrupoActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Novo grupo");
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+         fabAvancarCadastro = findViewById(R.id.fabAvancarCadastro);
+        fabAvancarCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(GrupoActivity.this,CadastroGrupoActivity.class);
+                i.putExtra("membros", (Serializable) listaMembrosSelecionados);
+                startActivity(i);
+
             }
         });
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Configuracoes iniciais
