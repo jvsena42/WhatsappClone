@@ -67,8 +67,8 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.MyVi
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            foto = itemView.findViewById(R.id.imageViewFotoContato);
-            nome = itemView.findViewById(R.id.textNomeContato);
+            foto = itemView.findViewById(R.id.imageViewFotoMembro);
+            nome = itemView.findViewById(R.id.textNomeMembroSelecionado);
             ultimaMensagem = itemView.findViewById(R.id.textEmailContato);
         }
     }

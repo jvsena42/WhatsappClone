@@ -9,10 +9,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.app.whatsapp.whatsappclone.R;
 import com.app.whatsapp.whatsappclone.adapter.ContatosAdapter;
+import com.app.whatsapp.whatsappclone.adapter.GrupoSelecionadoAdapter;
 import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
+import com.app.whatsapp.whatsappclone.helper.RecyclerItemClickListener;
 import com.app.whatsapp.whatsappclone.helper.UsuarioFirebase;
 import com.app.whatsapp.whatsappclone.model.Usuario;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +31,9 @@ public class GrupoActivity extends AppCompatActivity {
 
     private RecyclerView recyclerMembrosSelecionados, recyclerMembros;
     private ContatosAdapter contatosAdapter;
+    private GrupoSelecionadoAdapter grupoSelecionadoAdapter;
     private List<Usuario> listaMembros = new ArrayList<>();
+    private List<Usuario> listaMembrosSelecionados = new ArrayList<>();
     private ValueEventListener valueEventListenerMembros;
     private DatabaseReference usuariosRef;
     private FirebaseUser usuarioAtual;
@@ -64,11 +69,56 @@ public class GrupoActivity extends AppCompatActivity {
         //Conigurar adapter
         contatosAdapter = new ContatosAdapter(listaMembros,getApplicationContext());
 
-        //Configurar recycleerView
+        //Configurar recyclerView
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerMembros.setLayoutManager(layoutManager);
         recyclerMembros.setHasFixedSize(true);
         recyclerMembros.setAdapter(contatosAdapter);
+
+        recyclerMembros.addOnItemTouchListener(
+                new RecyclerItemClickListener(
+                        getApplicationContext(),
+                        recyclerMembros,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                Usuario usuarioSelecionado = listaMembros.get(position);
+
+                                //Remover o usuario selecionado da lista
+                                listaMembros.remove(usuarioSelecionado);
+                                contatosAdapter.notifyDataSetChanged();
+
+                                //Adiciona usuario na nova lista
+                                listaMembrosSelecionados.add(usuarioSelecionado);
+                                grupoSelecionadoAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                            }
+
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            }
+                        }
+                )
+        );
+
+        //Configurar recyclerView para os membros selecionados
+        grupoSelecionadoAdapter = new GrupoSelecionadoAdapter(listaMembrosSelecionados,getApplicationContext());
+
+        RecyclerView.LayoutManager layoutManagerHorizontal = new LinearLayoutManager(
+                getApplicationContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+        );
+
+        recyclerMembrosSelecionados.setLayoutManager(layoutManagerHorizontal);
+        recyclerMembrosSelecionados.setHasFixedSize(true);
+        recyclerMembrosSelecionados.setAdapter(grupoSelecionadoAdapter);
+
     }
 
     @Override

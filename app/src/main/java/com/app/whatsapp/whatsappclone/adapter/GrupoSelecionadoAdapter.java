@@ -17,40 +17,34 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyViewHolder> {
+public class GrupoSelecionadoAdapter extends RecyclerView.Adapter<GrupoSelecionadoAdapter.MyViewHolder> {
 
-    private List<Usuario> contatos;
+    private List<Usuario> contatosSelecionados;
     private Context context;
 
-    public ContatosAdapter(List<Usuario> listaContatos, Context c) {
-        this.contatos = listaContatos;
+    public GrupoSelecionadoAdapter(List<Usuario> listaContatos, Context c) {
+        this.contatosSelecionados = listaContatos;
         this.context = c;
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemLista = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_contatos,viewGroup,false);
-        return new MyViewHolder(itemLista);
+    public GrupoSelecionadoAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View itemLista = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_grupo_selecionado,viewGroup,false);
+        return new GrupoSelecionadoAdapter.MyViewHolder(itemLista);
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        Usuario usuario = contatos.get(i);
-        boolean cabecalho = usuario.getEmail().isEmpty();
+    public void onBindViewHolder(@NonNull GrupoSelecionadoAdapter.MyViewHolder myViewHolder, int i) {
+        Usuario usuario = contatosSelecionados.get(i);
 
         myViewHolder.nome.setText(usuario.getNome());
-        myViewHolder.email.setText(usuario.getEmail());
 
         if (usuario.getFoto() != null){
             Uri uri = Uri.parse(usuario.getFoto());
             Glide.with(context).load(uri).into(myViewHolder.foto);
-        }else if (cabecalho){
-            myViewHolder.foto.setImageResource(R.drawable.icone_grupo);
-            myViewHolder.email.setVisibility(View.GONE);
-        }
-        else {
+        }else {
             myViewHolder.foto.setImageResource(R.drawable.padrao);
         }
 
@@ -58,20 +52,20 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return contatos.size();
+        return contatosSelecionados.size();
     }
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         CircleImageView foto;
-        TextView nome,email;
+        TextView nome;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             foto = itemView.findViewById(R.id.imageViewFotoMembro);
             nome = itemView.findViewById(R.id.textNomeMembroSelecionado);
-            email = itemView.findViewById(R.id.textEmailContato);
         }
     }
 }
