@@ -66,13 +66,14 @@ public class GrupoActivity extends AppCompatActivity {
         //Configuracoes iniciais
         recyclerMembros = findViewById(R.id.recyclerMembros);
         recyclerMembrosSelecionados = findViewById(R.id.recyclerMembrosSelecionados);
+        fabAvancarCadastro = findViewById(R.id.fabAvancarCadastro);
 
         usuariosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("usuarios");
         usuarioAtual = UsuarioFirebase.getUsuarioAtual();
 
 
 
-        //Conigurar adapter
+        //Configurar adapter
         contatosAdapter = new ContatosAdapter(listaMembros,getApplicationContext());
 
         //Configurar recyclerView
