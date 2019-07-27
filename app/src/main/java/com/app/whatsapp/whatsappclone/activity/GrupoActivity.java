@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,7 +49,7 @@ public class GrupoActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Novo grupo");
-         fabAvancarCadastro = findViewById(R.id.fabAvancarCadastro);
+         fabAvancarCadastro = findViewById(R.id.fabSalvarGrupo);
         fabAvancarCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,7 +65,7 @@ public class GrupoActivity extends AppCompatActivity {
         //Configuracoes iniciais
         recyclerMembros = findViewById(R.id.recyclerMembros);
         recyclerMembrosSelecionados = findViewById(R.id.recyclerMembrosSelecionados);
-        fabAvancarCadastro = findViewById(R.id.fabAvancarCadastro);
+        fabAvancarCadastro = findViewById(R.id.fabSalvarGrupo);
 
         usuariosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("usuarios");
         usuarioAtual = UsuarioFirebase.getUsuarioAtual();

@@ -14,12 +14,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.whatsapp.whatsappclone.R;
 import com.app.whatsapp.whatsappclone.adapter.GrupoSelecionadoAdapter;
 import com.app.whatsapp.whatsappclone.config.ConfiguracaoFirebase;
+import com.app.whatsapp.whatsappclone.helper.UsuarioFirebase;
 import com.app.whatsapp.whatsappclone.model.Grupo;
 import com.app.whatsapp.whatsappclone.model.Usuario;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,6 +45,8 @@ public class CadastroGrupoActivity extends AppCompatActivity {
     private static final int SELECAO_GALERIA = 200;
     private StorageReference storageReference;
     private Grupo grupo;
+    private FloatingActionButton fabSalvarGrupo;
+    private EditText editNomeGrupo;
 
 
     @Override
@@ -54,20 +58,14 @@ public class CadastroGrupoActivity extends AppCompatActivity {
         toolbar.setSubtitle("Defina o nome");
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fabAvancarCadastro);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Configuracoes iniciais
         textoTotalParticipantes = findViewById(R.id.textTotalParticipantes);
         recyclerMembrosSelecionados = findViewById(R.id.recyclerMembrosGrupo);
         imageGrupo = findViewById(R.id.imageGrupo);
+        fabSalvarGrupo = findViewById(R.id.fabSalvarGrupo);
+        editNomeGrupo = findViewById(R.id.editNomeGrupo);
         grupo = new Grupo();
 
         storageReference = ConfiguracaoFirebase.getFirebaseStorage();
@@ -98,7 +96,22 @@ public class CadastroGrupoActivity extends AppCompatActivity {
         recyclerMembrosSelecionados.setHasFixedSize(true);
         recyclerMembrosSelecionados.setAdapter(grupoSelecionadoAdapter);
 
+        //Configurar floating action button
+        fabSalvarGrupo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            String nomeGrupo = editNomeGrupo.getText().toString();
+
+            //Adicionar à lista de membros o usuário que está logado
+            listaMembrosSelecionados.add(UsuarioFirebase.getDadosUsuarioLogado());
+
+            grupo.setMembros(listaMembrosSelecionados);
+            grupo.setNome(nomeGrupo);
+            grupo.salvar();
+
+            }
+        });
 
         //Recuperar lista de membros passada
         if (getIntent().getExtras() != null){

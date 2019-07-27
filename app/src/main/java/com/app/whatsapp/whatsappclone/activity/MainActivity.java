@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 if (newText != null && !newText.isEmpty()){
                     fragment.pesquisarConversas(newText.toLowerCase());
                 }
-                return false;
+                return true;
             }
         });
 
