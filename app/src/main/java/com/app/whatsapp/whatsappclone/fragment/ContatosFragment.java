@@ -106,14 +106,6 @@ public class ContatosFragment extends Fragment {
                         }
                 ));
 
-        /* Define um usuario com email vazio
-         em caso de email vazio o usuario sera utilizado como cabeçalho, exibindo um novo grupo  */
-        Usuario itemGrupo = new Usuario();
-        itemGrupo.setNome("Novo Grupo");
-        itemGrupo.setEmail("");
-
-        listaContatos.add(itemGrupo);
-
         return  view;
     }
 
@@ -127,10 +119,19 @@ public class ContatosFragment extends Fragment {
     public void onStop() {
         super.onStop();
         usuariosRef.removeEventListener(valueEventListenerContatos);
-        listaContatos.clear();
     }
 
     public void recuperarContatos(){
+
+        listaContatos.clear();
+
+        /* Define um usuario com email vazio
+         em caso de email vazio o usuario sera utilizado como cabeçalho, exibindo um novo grupo  */
+        Usuario itemGrupo = new Usuario();
+        itemGrupo.setNome("Novo Grupo");
+        itemGrupo.setEmail("");
+
+        listaContatos.add(itemGrupo);
 
         valueEventListenerContatos = usuariosRef.addValueEventListener(new ValueEventListener() {
             @Override
