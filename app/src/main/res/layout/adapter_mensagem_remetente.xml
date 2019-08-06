@@ -25,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="João Victor"
+            android:textColor="#009688"
             android:textSize="16sp"
             android:textStyle="bold" />
 
